@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Python Learning App</title>
+<style>
+  :root {
+    --bg: #14202E;
+    --card: #1E2E40;
+    --card-2: #263a51;
+    --text: #F2F5F8;
+    --muted: #B7C4D2;
+    --blue: #2EA6FF;
+    --gold: #FFC24B;
+    --green: #37C871;
+    --line: #35506e;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    line-height: 1.6;
+    padding: 24px;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 20px; }
+  header h1 { font-size: 42px; line-height: 1.2; margin: 0 0 10px 0; color: #fff; }
+  header p { font-size: 22px; color: var(--gold); margin: 0; font-weight: 600; }
+  .course-tag { display: block; font-size: 18px; color: var(--muted); margin-top: 8px; }
+
+  .tabs { display: flex; gap: 12px; margin: 22px 0; flex-wrap: wrap; }
+  .tab-btn {
+    flex: 1 1 180px; font-size: 21px; font-weight: 700;
+    padding: 16px 18px; background: var(--card); color: var(--text);
+    border: 3px solid var(--line); border-radius: 12px; cursor: pointer;
+  }
+  .tab-btn:hover { background: var(--card-2); }
+  .tab-btn:focus-visible { outline: 4px solid var(--gold); outline-offset: 3px; }
+  .tab-btn.active { background: var(--blue); color: #06121f; border-color: var(--blue); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .card {
+    background: var(--card); border: 3px solid var(--line);
+    border-radius: 14px; padding: 24px 26px; margin-bottom: 22px;
+  }
+  .card h2 { font-size: 30px; margin: 0 0 14px 0; color: var(--blue); }
+  .card h3 { font-size: 22px; margin: 18px 0 8px 0; color: var(--gold); }
+  .card ul { margin: 0; padding-left: 26px; }
+  .card li { margin-bottom: 12px; }
+  .card li strong { color: var(--gold); }
+
+  .callout { background: var(--card-2); border-left: 8px solid var(--gold); }
+  .callout h2 { color: var(--gold); }
+
+  .honesty {
+    background: #22303f; border: 2px dashed var(--gold);
+    border-radius: 12px; padding: 16px 20px; margin-bottom: 22px;
+    font-size: 18px; color: var(--text);
+  }
+
+  pre.code {
+    background: #0d1621; border: 2px solid var(--line);
+    border-radius: 10px; padding: 16px 18px; overflow-x: auto;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 19px; color: #d7f7e6; line-height: 1.5;
+  }
+
+  .try { font-size: 18px; color: var(--muted); margin-top: 10px; }
+  .try strong { color: var(--green); }
+
+  /* Progress */
+  .stats { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
+  .stat {
+    flex: 1 1 220px; background: #0d1621; border: 2px solid var(--line);
+    border-radius: 12px; padding: 16px 18px; text-align: center;
+  }
+  .stat .big { font-size: 34px; font-weight: 800; color: var(--green); display: block; }
+  .stat .small { font-size: 17px; color: var(--muted); }
+  .progress-bar-wrap {
+    background: #0d1621; border: 2px solid var(--line);
+    border-radius: 999px; height: 30px; overflow: hidden; margin: 14px 0 6px 0;
+  }
+  .progress-bar { height: 100%; width: 0%; background: var(--green); transition: width 0.3s ease; }
+  .chapter-label {
+    font-size: 19px; font-weight: 800; letter-spacing: 1px;
+    color: var(--blue); text-transform: uppercase;
+    margin: 22px 0 10px 0; padding-bottom: 6px; border-bottom: 2px solid var(--line);
+  }
+  .checklist { list-style: none; margin: 0; padding: 0; }
+  .checklist li {
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 18px; background: var(--card-2);
+    border: 2px solid var(--line); border-radius: 10px;
+    margin-bottom: 12px; font-size: 21px; cursor: pointer;
+  }
+  .checklist li:hover { border-color: var(--blue); }
+  .checklist input { width: 30px; height: 30px; flex: 0 0 auto; cursor: pointer; accent-color: var(--green); }
+  .checklist label { cursor: pointer; flex: 1 1 auto; }
+  .checklist li.done label { color: var(--green); text-decoration: line-through; text-decoration-color: var(--green); }
+  .weight {
+    flex: 0 0 auto; font-size: 17px; font-weight: 700; color: var(--gold);
+    background: #0d1621; border: 2px solid var(--line);
+    border-radius: 999px; padding: 6px 14px; white-space: nowrap;
+  }
+  .kind { font-weight: 700; color: var(--gold); }
+  .note { font-size: 17px; color: var(--muted); margin-top: 14px; }
+
+  /* Practice console */
+  textarea#code {
+    width: 100%; min-height: 220px; font-family: "Consolas", "Courier New", monospace;
+    font-size: 20px; line-height: 1.5; padding: 16px;
+    background: #0d1621; color: #d7f7e6;
+    border: 3px solid var(--line); border-radius: 10px; resize: vertical;
+  }
+  textarea#code:focus-visible { outline: 4px solid var(--gold); outline-offset: 2px; }
+  .run-btn {
+    font-size: 22px; font-weight: 800; padding: 16px 30px;
+    background: var(--green); color: #04170c; border: none;
+    border-radius: 10px; cursor: pointer; margin: 14px 0;
+  }
+  .run-btn:focus-visible { outline: 4px solid #fff; outline-offset: 2px; }
+  .run-btn:disabled { opacity: 0.6; cursor: default; }
+  #output {
+    white-space: pre-wrap; background: #0d1621; border: 2px solid var(--line);
+    border-radius: 10px; padding: 16px 18px; min-height: 90px;
+    font-family: "Consolas", "Courier New", monospace; font-size: 19px; color: var(--text);
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>My Python Learning App</h1>
+      <p>Learn it. Practice it. Track it.</p>
+      <span class="course-tag">Programming for Everybody (Getting Started with Python), University of Michigan on Coursera</span>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" id="tab-learn" onclick="showPanel('learn')" role="tab">Learn</button>
+      <button class="tab-btn" id="tab-practice" onclick="showPanel('practice')" role="tab">Practice</button>
+      <button class="tab-btn" id="tab-progress" onclick="showPanel('progress')" role="tab">My Progress</button>
+      <button class="tab-btn" id="tab-truth" onclick="showPanel('truth')" role="tab">Encouragement</button>
+    </div>
+
+    <!-- LEARN PANEL -->
+    <div class="panel active" id="panel-learn" role="tabpanel">
+
+      <div class="honesty">
+        This section is here to help you understand and practice. Do your graded quizzes and assignments yourself on Coursera. That keeps your work your own, which is exactly what the course asks.
+      </div>
+
+      <div class="card">
+        <h2>Chapter 1. Why We Program</h2>
+        <p>A program is a set of step-by-step instructions you give the computer. Python is the language you write those instructions in. The computer follows them in order, from the top of the file to the bottom.</p>
+        <h3>Words to know</h3>
+        <ul>
+          <li><strong>Program.</strong> A list of instructions.</li>
+          <li><strong>Python.</strong> The language you write them in.</li>
+          <li><strong>print.</strong> The command that shows text on the screen.</li>
+        </ul>
+        <h3>Example</h3>
+        <pre class="code">print("Hello, World")
+print("I am learning to code")</pre>
+        <p class="try"><strong>Try it:</strong> Change the words inside the quotes and print two lines about yourself.</p>
+      </div>
+
+      <div class="card">
+        <h2>Chapter 2. Variables and Expressions</h2>
+        <p>A variable is a labeled box that holds a value so you can use it later. It can hold text or numbers, and you can do math with numbers. The input command lets the program ask you a question and store your answer.</p>
+        <h3>Words to know</h3>
+        <ul>
+          <li><strong>Variable.</strong> A named box that holds a value.</li>
+          <li><strong>String.</strong> Text, always inside quotes.</li>
+          <li><strong>Integer.</strong> A whole number.</li>
+          <li><strong>input.</strong> Asks a question and stores what you type.</li>
+        </ul>
+        <h3>Example</h3>
+        <pre class="code">name = input("What is your name? ")
+print("Hello", name)
+
+age = 30
+print("Next year you will be", age + 1)</pre>
+        <p class="try"><strong>Try it:</strong> Make a variable for your favorite color and print a sentence using it.</p>
+      </div>
+
+      <div class="card">
+        <h2>Chapter 3. Conditional Code</h2>
+        <p>Sometimes you want the program to make a choice. The word if checks whether something is true. If it is true, the indented lines below it run. The word else covers the other case. Indentation, meaning the spaces at the start of a line, is how Python knows which lines belong together.</p>
+        <h3>Words to know</h3>
+        <ul>
+          <li><strong>if.</strong> Runs code only when something is true.</li>
+          <li><strong>else.</strong> Runs code when the if was not true.</li>
+          <li><strong>Comparison.</strong> Greater than, less than, or equal to.</li>
+        </ul>
+        <h3>Example</h3>
+        <pre class="code">hours = 45
+if hours &gt; 40:
+    print("You worked overtime")
+else:
+    print("Normal week")</pre>
+        <p class="try"><strong>Try it:</strong> Change the number in hours and watch which message prints.</p>
+      </div>
+
+      <div class="card">
+        <h2>Chapter 4. Functions</h2>
+        <p>A function is a named block of code you can reuse. You define it once with the word def, then call it whenever you need it. A function can take an input, called a parameter, and can hand back a result with the word return.</p>
+        <h3>Words to know</h3>
+        <ul>
+          <li><strong>def.</strong> Defines a new function.</li>
+          <li><strong>Parameter.</strong> An input the function receives.</li>
+          <li><strong>return.</strong> Hands a result back.</li>
+          <li><strong>Call.</strong> Running the function by its name.</li>
+        </ul>
+        <h3>Example</h3>
+        <pre class="code">def greet(person):
+    print("Hello", person)
+
+greet("Robert")
+greet("Kristina")</pre>
+        <p class="try"><strong>Try it:</strong> Write a function that prints a short encouragement, then call it twice.</p>
+      </div>
+
+      <div class="card">
+        <h2>Chapter 5. Loops and Iteration</h2>
+        <p>A loop repeats work so you do not have to write it many times. A for loop walks through a set of items one at a time. A while loop keeps going until something changes. A common pattern is to keep a running total, or to remember the biggest value you have seen so far.</p>
+        <h3>Words to know</h3>
+        <ul>
+          <li><strong>Loop.</strong> Code that repeats.</li>
+          <li><strong>for.</strong> Repeats once for each item.</li>
+          <li><strong>while.</strong> Repeats until a condition changes.</li>
+          <li><strong>range.</strong> Makes a series of numbers to loop over.</li>
+        </ul>
+        <h3>Example</h3>
+        <pre class="code">for number in range(1, 6):
+    print("Counting", number)</pre>
+        <p class="try"><strong>Try it:</strong> Change range(1, 6) to a bigger number and watch it count.</p>
+      </div>
+
+    </div>
+
+    <!-- PRACTICE PANEL -->
+    <div class="panel" id="panel-practice" role="tabpanel">
+      <div class="card">
+        <h2>Practice Python</h2>
+        <p>Type Python code below and press Run. This is real Python running right in your browser, so you can rehearse anything from the Learn tab. It is a safe place to experiment. Nothing here is graded.</p>
+        <p class="note">The first time you press Run, Python needs a moment to load, and this tab needs an internet connection. After that it is quick.</p>
+
+        <label for="code" style="font-weight:700; display:block; margin:10px 0 8px 0;">Your code</label>
+        <textarea id="code" spellcheck="false">print("Hello, World")
+print("I am learning Python")</textarea>
+
+        <button class="run-btn" id="runBtn" onclick="runCode()">Run</button>
+
+        <label for="output" style="font-weight:700; display:block; margin:6px 0 8px 0;">Output</label>
+        <div id="output">Your results will appear here.</div>
+      </div>
+    </div>
+
+    <!-- PROGRESS PANEL -->
+    <div class="panel" id="panel-progress" role="tabpanel">
+      <div class="card">
+        <h2>My Grade Progress</h2>
+        <div class="stats">
+          <div class="stat"><span class="big" id="countStat">0 of 12</span><span class="small">items finished</span></div>
+          <div class="stat"><span class="big" id="gradeStat">0.00%</span><span class="small">of final grade completed</span></div>
+        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+        <div class="chapter-label">Chapter 1</div>
+        <ul class="checklist">
+          <li data-weight="9.18"><input type="checkbox" id="g1"><label for="g1"><span class="kind">Quiz.</span> Chapter 1</label><span class="weight">9.18%</span></li>
+          <li data-weight="8.26"><input type="checkbox" id="g2"><label for="g2"><span class="kind">Assignment.</span> Write Hello World</label><span class="weight">8.26%</span></li>
+        </ul>
+
+        <div class="chapter-label">Chapter 2</div>
+        <ul class="checklist">
+          <li data-weight="8.26"><input type="checkbox" id="g3"><label for="g3"><span class="kind">Quiz.</span> Chapter 2</label><span class="weight">8.26%</span></li>
+          <li data-weight="8.26"><input type="checkbox" id="g4"><label for="g4"><span class="kind">Assignment.</span> Welcome Message</label><span class="weight">8.26%</span></li>
+          <li data-weight="8.26"><input type="checkbox" id="g5"><label for="g5"><span class="kind">Assignment.</span> Pay Calculator</label><span class="weight">8.26%</span></li>
+        </ul>
+
+        <div class="chapter-label">Chapter 3</div>
+        <ul class="checklist">
+          <li data-weight="8.26"><input type="checkbox" id="g6"><label for="g6"><span class="kind">Quiz.</span> Chapter 3</label><span class="weight">8.26%</span></li>
+          <li data-weight="8.26"><input type="checkbox" id="g7"><label for="g7"><span class="kind">Assignment.</span> Overtime Pay Calculator</label><span class="weight">8.26%</span></li>
+          <li data-weight="8.26"><input type="checkbox" id="g8"><label for="g8"><span class="kind">Assignment.</span> Write Conditional Statements</label><span class="weight">8.26%</span></li>
+        </ul>
+
+        <div class="chapter-label">Chapter 4</div>
+        <ul class="checklist">
+          <li data-weight="8.25"><input type="checkbox" id="g9"><label for="g9"><span class="kind">Quiz.</span> Chapter 4</label><span class="weight">8.25%</span></li>
+          <li data-weight="8.25"><input type="checkbox" id="g10"><label for="g10"><span class="kind">Assignment.</span> Build Functions</label><span class="weight">8.25%</span></li>
+        </ul>
+
+        <div class="chapter-label">Chapter 5</div>
+        <ul class="checklist">
+          <li data-weight="8.25"><input type="checkbox" id="g11"><label for="g11"><span class="kind">Quiz.</span> Chapter 5</label><span class="weight">8.25%</span></li>
+          <li data-weight="8.25"><input type="checkbox" id="g12"><label for="g12"><span class="kind">Assignment.</span> Find the Largest and Smallest Numbers</label><span class="weight">8.25%</span></li>
+        </ul>
+
+        <p class="note">Check off each quiz or assignment as you pass it on Coursera. The percentage shows how much of your final grade you have finished. Your check marks are saved on this device when you open the file in your browser.</p>
+      </div>
+    </div>
+
+    <!-- TRUTH PANEL -->
+    <div class="panel" id="panel-truth" role="tabpanel">
+      <div class="card">
+        <h2>What Makes It Feel Hard</h2>
+        <ul>
+          <li><strong>A new way of thinking.</strong> You break problems into small logical steps. This is different from how we usually think.</li>
+          <li><strong>New words.</strong> Variable, function, loop. These are all new at first, and that is normal.</li>
+          <li><strong>Mistakes show up right away.</strong> When something is wrong, the computer tells you. Learning to fix errors takes practice.</li>
+          <li><strong>Repetition matters.</strong> You write the same kind of code many times before it feels natural.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Why You Have an Advantage</h2>
+        <ul>
+          <li><strong>You break big challenges into steps.</strong> That is exactly what programming is.</li>
+          <li><strong>You have time to practice.</strong> Consistency beats intensity every time.</li>
+          <li><strong>You have a real reason to learn.</strong> You want to build tools for your website and your work. That keeps you going.</li>
+          <li><strong>You understand persistence.</strong> You have faced challenges far harder than a syntax error. You know how to push through.</li>
+        </ul>
+      </div>
+      <div class="card callout">
+        <h2>Remember This</h2>
+        <p>Coding is not harder than learning to drive or learning an instrument. It just feels different at first. When something feels hard, it usually means you are learning. Every expert started exactly where you are. The only difference is that they kept going.</p>
+      </div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
+<script>
+  function showPanel(name) {
+    ['learn','practice','progress','truth'].forEach(function(n) {
+      document.getElementById('panel-' + n).classList.toggle('active', n === name);
+      document.getElementById('tab-' + n).classList.toggle('active', n === name);
+    });
+  }
+
+  /* ---- Progress tracking ---- */
+  var STORAGE_KEY = 'py4e_graded_v1';
+  function loadSaved() {
+    try { var raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : { checked: {} }; }
+    catch (e) { return { checked: {} }; }
+  }
+  function save(state) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {} }
+  var state = loadSaved();
+  function update() {
+    var boxes = document.querySelectorAll('.checklist input[type="checkbox"]');
+    var total = boxes.length, done = 0, grade = 0;
+    boxes.forEach(function(b) {
+      var li = b.closest('li');
+      if (b.checked) { done++; grade += parseFloat(li.getAttribute('data-weight')) || 0; li.classList.add('done'); }
+      else { li.classList.remove('done'); }
+    });
+    document.getElementById('countStat').textContent = done + ' of ' + total;
+    document.getElementById('gradeStat').textContent = grade.toFixed(2) + '%';
+    document.getElementById('progressBar').style.width = Math.min(grade, 100) + '%';
+  }
+  document.querySelectorAll('.checklist input[type="checkbox"]').forEach(function(box) {
+    box.checked = !!state.checked[box.id];
+    box.addEventListener('change', function() { state.checked[box.id] = box.checked; save(state); update(); });
+  });
+  update();
+
+  /* ---- Python practice console (Pyodide) ---- */
+  var pyodide = null;
+  var outEl = document.getElementById('output');
+  function setOut(t) { outEl.textContent = t; }
+  function appendOut(t) { outEl.textContent += t; }
+
+  async function ensurePy() {
+    if (pyodide) return pyodide;
+    setOut("Loading Python for the first time. This can take up to a minute...");
+    pyodide = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/" });
+    pyodide.setStdout({ batched: function(s) { appendOut(s + "\n"); } });
+    pyodide.setStderr({ batched: function(s) { appendOut(s + "\n"); } });
+    await pyodide.runPythonAsync(
+      "import builtins\n" +
+      "from js import window\n" +
+      "def _claude_input(prompt=''):\n" +
+      "    r = window.prompt(prompt)\n" +
+      "    if r is None:\n" +
+      "        r = ''\n" +
+      "    print(str(prompt) + str(r))\n" +
+      "    return str(r)\n" +
+      "builtins.input = _claude_input\n"
+    );
+    return pyodide;
+  }
+
+  async function runCode() {
+    var btn = document.getElementById('runBtn');
+    btn.disabled = true;
+    var oldLabel = btn.textContent;
+    btn.textContent = "Running...";
+    try {
+      var py = await ensurePy();
+      setOut("");
+      await py.runPythonAsync(document.getElementById('code').value);
+      if (outEl.textContent === "") setOut("(Your code ran, but did not print anything.)");
+    } catch (e) {
+      appendOut("\n" + e);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldLabel;
+    }
+  }
+</script>
+</body>
+</html>

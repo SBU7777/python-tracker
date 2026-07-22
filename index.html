@@ -29,7 +29,14 @@
     padding: 24px;
   }
 
-  .wrap { max-width: 880px; margin: 0 auto; }
+  .wrap { max-width: 900px; margin: 0 auto; }
+
+  .skip-link {
+    position: absolute; left: -9999px; top: 0;
+    background: var(--gold); color: #1a1200; padding: 14px 20px;
+    font-weight: 800; border-radius: 0 0 10px 0; z-index: 999;
+  }
+  .skip-link:focus { left: 0; }
 
   header { text-align: center; margin-bottom: 20px; }
   header h1 { font-size: 42px; line-height: 1.2; margin: 0 0 10px 0; color: #fff; }
@@ -38,13 +45,13 @@
 
   .tabs { display: flex; gap: 12px; margin: 22px 0; flex-wrap: wrap; }
   .tab-btn {
-    flex: 1 1 180px; font-size: 21px; font-weight: 700;
+    flex: 1 1 160px; font-size: 21px; font-weight: 700;
     padding: 16px 18px; background: var(--card); color: var(--text);
     border: 3px solid var(--line); border-radius: 12px; cursor: pointer;
   }
   .tab-btn:hover { background: var(--card-2); }
   .tab-btn:focus-visible { outline: 4px solid var(--gold); outline-offset: 3px; }
-  .tab-btn.active { background: var(--blue); color: #06121f; border-color: var(--blue); }
+  .tab-btn[aria-selected="true"] { background: var(--blue); color: #06121f; border-color: var(--blue); }
 
   .panel { display: none; }
   .panel.active { display: block; }
@@ -78,6 +85,38 @@
   .try { font-size: 18px; color: var(--muted); margin-top: 10px; }
   .try strong { color: var(--green); }
 
+  /* Exercises */
+  .ex {
+    background: var(--card-2); border: 2px solid var(--line);
+    border-radius: 12px; padding: 20px 22px; margin-bottom: 18px;
+  }
+  .ex h3 {
+    font-size: 22px; margin: 0 0 8px 0; color: var(--gold);
+  }
+  .ex .task { margin: 0 0 12px 0; }
+  .ex-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .mini-btn {
+    font-size: 17px; font-weight: 700; padding: 11px 18px;
+    background: #0d1621; color: var(--text);
+    border: 2px solid var(--line); border-radius: 9px; cursor: pointer;
+  }
+  .mini-btn:hover { border-color: var(--blue); }
+  .mini-btn:focus-visible { outline: 4px solid var(--gold); outline-offset: 2px; }
+  .mini-btn.go { background: var(--blue); color: #06121f; border-color: var(--blue); }
+  .reveal { display: none; margin-top: 14px; }
+  .reveal.open { display: block; }
+  .reveal p { margin: 0 0 8px 0; font-size: 18px; color: var(--muted); }
+
+  .level {
+    display: inline-block; font-size: 15px; font-weight: 700;
+    padding: 3px 12px; border-radius: 999px; margin-left: 10px;
+    background: #0d1621; border: 2px solid var(--line); color: var(--muted);
+    vertical-align: middle;
+  }
+  .level.easy { color: var(--green); }
+  .level.medium { color: var(--gold); }
+  .level.challenge { color: #ff8f6b; }
+
   /* Progress */
   .stats { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
   .stat {
@@ -101,10 +140,11 @@
     display: flex; align-items: center; gap: 16px;
     padding: 16px 18px; background: var(--card-2);
     border: 2px solid var(--line); border-radius: 10px;
-    margin-bottom: 12px; font-size: 21px; cursor: pointer;
+    margin-bottom: 12px; font-size: 21px;
   }
   .checklist li:hover { border-color: var(--blue); }
   .checklist input { width: 30px; height: 30px; flex: 0 0 auto; cursor: pointer; accent-color: var(--green); }
+  .checklist input:focus-visible { outline: 4px solid var(--gold); outline-offset: 3px; }
   .checklist label { cursor: pointer; flex: 1 1 auto; }
   .checklist li.done label { color: var(--green); text-decoration: line-through; text-decoration-color: var(--green); }
   .weight {
@@ -117,7 +157,7 @@
 
   /* Practice console */
   textarea#code {
-    width: 100%; min-height: 220px; font-family: "Consolas", "Courier New", monospace;
+    width: 100%; min-height: 240px; font-family: "Consolas", "Courier New", monospace;
     font-size: 20px; line-height: 1.5; padding: 16px;
     background: #0d1621; color: #d7f7e6;
     border: 3px solid var(--line); border-radius: 10px; resize: vertical;
@@ -126,18 +166,32 @@
   .run-btn {
     font-size: 22px; font-weight: 800; padding: 16px 30px;
     background: var(--green); color: #04170c; border: none;
-    border-radius: 10px; cursor: pointer; margin: 14px 0;
+    border-radius: 10px; cursor: pointer; margin: 14px 10px 14px 0;
   }
   .run-btn:focus-visible { outline: 4px solid #fff; outline-offset: 2px; }
   .run-btn:disabled { opacity: 0.6; cursor: default; }
+  .clear-btn {
+    font-size: 20px; font-weight: 700; padding: 15px 24px;
+    background: #0d1621; color: var(--text);
+    border: 2px solid var(--line); border-radius: 10px; cursor: pointer;
+  }
+  .clear-btn:focus-visible { outline: 4px solid var(--gold); outline-offset: 2px; }
   #output {
     white-space: pre-wrap; background: #0d1621; border: 2px solid var(--line);
     border-radius: 10px; padding: 16px 18px; min-height: 90px;
     font-family: "Consolas", "Courier New", monospace; font-size: 19px; color: var(--text);
   }
+  .loaded-msg {
+    background: #1d3a2a; border: 2px solid var(--green);
+    border-radius: 10px; padding: 12px 16px; margin-bottom: 14px;
+    font-size: 18px; color: #cdf5de; display: none;
+  }
+  .loaded-msg.show { display: block; }
 </style>
 </head>
 <body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
   <div class="wrap">
     <header>
       <h1>My Python Learning App</h1>
@@ -145,15 +199,18 @@
       <span class="course-tag">Programming for Everybody (Getting Started with Python), University of Michigan on Coursera</span>
     </header>
 
-    <div class="tabs" role="tablist">
-      <button class="tab-btn active" id="tab-learn" onclick="showPanel('learn')" role="tab">Learn</button>
-      <button class="tab-btn" id="tab-practice" onclick="showPanel('practice')" role="tab">Practice</button>
-      <button class="tab-btn" id="tab-progress" onclick="showPanel('progress')" role="tab">My Progress</button>
-      <button class="tab-btn" id="tab-truth" onclick="showPanel('truth')" role="tab">Encouragement</button>
+    <div class="tabs" role="tablist" aria-label="Sections of the app">
+      <button class="tab-btn" id="tab-learn" onclick="showPanel('learn')" role="tab" aria-selected="true" aria-controls="panel-learn">Learn</button>
+      <button class="tab-btn" id="tab-exercises" onclick="showPanel('exercises')" role="tab" aria-selected="false" aria-controls="panel-exercises">Exercises</button>
+      <button class="tab-btn" id="tab-practice" onclick="showPanel('practice')" role="tab" aria-selected="false" aria-controls="panel-practice">Practice</button>
+      <button class="tab-btn" id="tab-progress" onclick="showPanel('progress')" role="tab" aria-selected="false" aria-controls="panel-progress">My Progress</button>
+      <button class="tab-btn" id="tab-truth" onclick="showPanel('truth')" role="tab" aria-selected="false" aria-controls="panel-truth">Encouragement</button>
     </div>
 
+    <main id="main">
+
     <!-- LEARN PANEL -->
-    <div class="panel active" id="panel-learn" role="tabpanel">
+    <div class="panel active" id="panel-learn" role="tabpanel" aria-labelledby="tab-learn" tabindex="0">
 
       <div class="honesty">
         This section is here to help you understand and practice. Do your graded quizzes and assignments yourself on Coursera. That keeps your work your own, which is exactly what the course asks.
@@ -167,11 +224,12 @@
           <li><strong>Program.</strong> A list of instructions.</li>
           <li><strong>Python.</strong> The language you write them in.</li>
           <li><strong>print.</strong> The command that shows text on the screen.</li>
+          <li><strong>Comment.</strong> A note for humans, starting with the hash mark. Python ignores it.</li>
         </ul>
         <h3>Example</h3>
-        <pre class="code">print("Hello, World")
+        <pre class="code"># This is a comment
+print("Hello, World")
 print("I am learning to code")</pre>
-        <p class="try"><strong>Try it:</strong> Change the words inside the quotes and print two lines about yourself.</p>
       </div>
 
       <div class="card">
@@ -182,33 +240,36 @@ print("I am learning to code")</pre>
           <li><strong>Variable.</strong> A named box that holds a value.</li>
           <li><strong>String.</strong> Text, always inside quotes.</li>
           <li><strong>Integer.</strong> A whole number.</li>
-          <li><strong>input.</strong> Asks a question and stores what you type.</li>
+          <li><strong>Float.</strong> A number with a decimal point.</li>
+          <li><strong>input.</strong> Asks a question and stores what you type. It always gives back text.</li>
+          <li><strong>int and float.</strong> Convert text into a number so you can do math with it.</li>
         </ul>
         <h3>Example</h3>
         <pre class="code">name = input("What is your name? ")
 print("Hello", name)
 
-age = 30
+age = int(input("How old are you? "))
 print("Next year you will be", age + 1)</pre>
-        <p class="try"><strong>Try it:</strong> Make a variable for your favorite color and print a sentence using it.</p>
       </div>
 
       <div class="card">
         <h2>Chapter 3. Conditional Code</h2>
-        <p>Sometimes you want the program to make a choice. The word if checks whether something is true. If it is true, the indented lines below it run. The word else covers the other case. Indentation, meaning the spaces at the start of a line, is how Python knows which lines belong together.</p>
+        <p>Sometimes you want the program to make a choice. The word if checks whether something is true. If it is true, the indented lines below it run. The word elif checks another possibility, and else covers everything left over. Indentation, meaning the spaces at the start of a line, is how Python knows which lines belong together.</p>
         <h3>Words to know</h3>
         <ul>
           <li><strong>if.</strong> Runs code only when something is true.</li>
-          <li><strong>else.</strong> Runs code when the if was not true.</li>
-          <li><strong>Comparison.</strong> Greater than, less than, or equal to.</li>
+          <li><strong>elif.</strong> Checks another condition if the first was false.</li>
+          <li><strong>else.</strong> Runs when nothing above it was true.</li>
+          <li><strong>try and except.</strong> Attempts risky code, and catches the error instead of crashing.</li>
         </ul>
         <h3>Example</h3>
         <pre class="code">hours = 45
 if hours &gt; 40:
     print("You worked overtime")
+elif hours == 40:
+    print("Exactly full time")
 else:
-    print("Normal week")</pre>
-        <p class="try"><strong>Try it:</strong> Change the number in hours and watch which message prints.</p>
+    print("Under full time")</pre>
       </div>
 
       <div class="card">
@@ -218,102 +279,487 @@ else:
         <ul>
           <li><strong>def.</strong> Defines a new function.</li>
           <li><strong>Parameter.</strong> An input the function receives.</li>
-          <li><strong>return.</strong> Hands a result back.</li>
+          <li><strong>return.</strong> Hands a result back to whoever called it.</li>
           <li><strong>Call.</strong> Running the function by its name.</li>
         </ul>
         <h3>Example</h3>
         <pre class="code">def greet(person):
     print("Hello", person)
 
+def double(number):
+    return number * 2
+
 greet("Robert")
-greet("Kristina")</pre>
-        <p class="try"><strong>Try it:</strong> Write a function that prints a short encouragement, then call it twice.</p>
+print(double(21))</pre>
       </div>
 
       <div class="card">
         <h2>Chapter 5. Loops and Iteration</h2>
-        <p>A loop repeats work so you do not have to write it many times. A for loop walks through a set of items one at a time. A while loop keeps going until something changes. A common pattern is to keep a running total, or to remember the biggest value you have seen so far.</p>
+        <p>A loop repeats work so you do not have to write it many times. A for loop walks through a set of items one at a time. A while loop keeps going until something changes. Common patterns are keeping a running total, counting things, and remembering the largest value you have seen so far.</p>
         <h3>Words to know</h3>
         <ul>
-          <li><strong>Loop.</strong> Code that repeats.</li>
           <li><strong>for.</strong> Repeats once for each item.</li>
           <li><strong>while.</strong> Repeats until a condition changes.</li>
           <li><strong>range.</strong> Makes a series of numbers to loop over.</li>
+          <li><strong>break.</strong> Leaves the loop early.</li>
+          <li><strong>continue.</strong> Skips to the next time around.</li>
+          <li><strong>None.</strong> A special empty value, useful for starting a largest or smallest search.</li>
         </ul>
         <h3>Example</h3>
-        <pre class="code">for number in range(1, 6):
-    print("Counting", number)</pre>
-        <p class="try"><strong>Try it:</strong> Change range(1, 6) to a bigger number and watch it count.</p>
+        <pre class="code">total = 0
+for number in [3, 8, 5]:
+    total = total + number
+print("Total is", total)</pre>
+      </div>
+
+    </div>
+
+    <!-- EXERCISES PANEL -->
+    <div class="panel" id="panel-exercises" role="tabpanel" aria-labelledby="tab-exercises" tabindex="0">
+
+      <div class="honesty">
+        These are my own practice problems, not the graded work. Use them to build your skill, then do your Coursera quizzes and assignments on your own. Press Load into Practice on any exercise to send starter code to the Practice tab.
+      </div>
+
+      <div class="card">
+        <h2>Chapter 1 Exercises</h2>
+
+        <div class="ex">
+          <h3>1.1 Three lines about you <span class="level easy">Easy</span></h3>
+          <p class="task">Print three separate lines: your name, your town, and one thing you want to build with code.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('# Print three lines about yourself\nprint(\"\")\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h1a')" aria-expanded="false" id="btn-h1a">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s1a')" aria-expanded="false" id="btn-s1a">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h1a"><p>Use print three times, once per line. Each piece of text goes inside quotes.</p></div>
+          <div class="reveal" id="s1a"><pre class="code">print("Robert")
+print("Boston")
+print("A tool for my website")</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>1.2 Add a comment <span class="level easy">Easy</span></h3>
+          <p class="task">Write a program that prints one line, and put a comment above it explaining what the line does.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('# Write your comment here\nprint(\"Learning Python\")\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h1b')" aria-expanded="false" id="btn-h1b">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s1b')" aria-expanded="false" id="btn-s1b">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h1b"><p>A comment starts with the hash mark. Python skips over it entirely.</p></div>
+          <div class="reveal" id="s1b"><pre class="code"># This line greets the user
+print("Learning Python")</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>1.3 Break it on purpose <span class="level medium">Medium</span></h3>
+          <p class="task">Run a line with a missing quote mark and read the error Python gives you. Then fix it. Learning to read errors is a real skill.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('print(\"This line is broken)\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h1c')" aria-expanded="false" id="btn-h1c">Show hint</button>
+          </div>
+          <div class="reveal" id="h1c"><p>Python will say something about an unterminated string. That means a quote mark is missing. Add the closing quote before the closing bracket.</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Chapter 2 Exercises</h2>
+
+        <div class="ex">
+          <h3>2.1 Favorite things <span class="level easy">Easy</span></h3>
+          <p class="task">Make three variables for a color, a food, and a number. Print a sentence that uses all three.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('color = \"\"\nfood = \"\"\nnumber = 0\n\nprint()\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h2a')" aria-expanded="false" id="btn-h2a">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s2a')" aria-expanded="false" id="btn-s2a">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h2a"><p>You can list several things inside one print, separated by commas. Python puts a space between them.</p></div>
+          <div class="reveal" id="s2a"><pre class="code">color = "blue"
+food = "pizza"
+number = 7
+
+print("I like", color, "and", food, "and the number", number)</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>2.2 Ask and answer <span class="level easy">Easy</span></h3>
+          <p class="task">Ask the person for their city, then print a sentence welcoming them from that city.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('city = input(\"What city are you from? \")\n\nprint()\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h2b')" aria-expanded="false" id="btn-h2b">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s2b')" aria-expanded="false" id="btn-s2b">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h2b"><p>The input command hands back whatever was typed. Store it in a variable, then use that variable in your print.</p></div>
+          <div class="reveal" id="s2b"><pre class="code">city = input("What city are you from? ")
+print("Welcome, friend from", city)</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>2.3 Text is not a number <span class="level medium">Medium</span></h3>
+          <p class="task">Ask for a number, then print that number doubled. Watch out, because input always gives you text, so you must convert it first.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('answer = input(\"Give me a number: \")\n\n# Convert it, then double it\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h2c')" aria-expanded="false" id="btn-h2c">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s2c')" aria-expanded="false" id="btn-s2c">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h2c"><p>Wrap the value in int to turn text into a whole number. If you skip this, Python will repeat the text instead of doing math.</p></div>
+          <div class="reveal" id="s2c"><pre class="code">answer = input("Give me a number: ")
+number = int(answer)
+print("Doubled, that is", number * 2)</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>2.4 Rectangle area <span class="level medium">Medium</span></h3>
+          <p class="task">Ask for a width and a height, then print the area. Use float so decimals work too.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('width = float(input(\"Width: \"))\nheight = float(input(\"Height: \"))\n\n# Print the area\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('s2d')" aria-expanded="false" id="btn-s2d">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="s2d"><pre class="code">width = float(input("Width: "))
+height = float(input("Height: "))
+area = width * height
+print("The area is", area)</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>2.5 Seconds to minutes <span class="level challenge">Challenge</span></h3>
+          <p class="task">Ask for a number of seconds. Print how many whole minutes that is and how many seconds are left over.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('seconds = int(input(\"How many seconds? \"))\n\n# Whole minutes, then leftover seconds\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h2e')" aria-expanded="false" id="btn-h2e">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s2e')" aria-expanded="false" id="btn-s2e">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h2e"><p>Two double slashes give you whole number division. The percent sign gives you the remainder.</p></div>
+          <div class="reveal" id="s2e"><pre class="code">seconds = int(input("How many seconds? "))
+minutes = seconds // 60
+left = seconds % 60
+print(minutes, "minutes and", left, "seconds")</pre></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Chapter 3 Exercises</h2>
+
+        <div class="ex">
+          <h3>3.1 Hot or cold <span class="level easy">Easy</span></h3>
+          <p class="task">Ask for a temperature. Print one message if it is above 75, and a different message otherwise.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('temp = int(input(\"Temperature: \"))\n\nif temp &gt; 75:\n    print()\nelse:\n    print()\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('s3a')" aria-expanded="false" id="btn-s3a">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="s3a"><pre class="code">temp = int(input("Temperature: "))
+if temp &gt; 75:
+    print("Warm out there")
+else:
+    print("Bring a jacket")</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>3.2 Three way sort <span class="level medium">Medium</span></h3>
+          <p class="task">Ask for a number. Say whether it is positive, negative, or exactly zero. You will need elif for this.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('number = int(input(\"Give me a number: \"))\n\nif \nelif \nelse:\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h3b')" aria-expanded="false" id="btn-h3b">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s3b')" aria-expanded="false" id="btn-s3b">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h3b"><p>Check greater than zero first, then less than zero, then let else catch the only case left, which is zero.</p></div>
+          <div class="reveal" id="s3b"><pre class="code">number = int(input("Give me a number: "))
+if number &gt; 0:
+    print("Positive")
+elif number &lt; 0:
+    print("Negative")
+else:
+    print("Zero")</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>3.3 Letter grade <span class="level medium">Medium</span></h3>
+          <p class="task">Ask for a score out of 100. Print A for 90 and up, B for 80s, C for 70s, and F below that.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('score = int(input(\"Score: \"))\n\n# Use if, elif, elif, else\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('s3c')" aria-expanded="false" id="btn-s3c">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="s3c"><pre class="code">score = int(input("Score: "))
+if score &gt;= 90:
+    print("A")
+elif score &gt;= 80:
+    print("B")
+elif score &gt;= 70:
+    print("C")
+else:
+    print("F")</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>3.4 Catch the bad input <span class="level challenge">Challenge</span></h3>
+          <p class="task">Ask for a number, but do not let the program crash if the person types letters. Use try and except to print a friendly message instead.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('raw = input(\"Type a number: \")\n\ntry:\n    \nexcept:\n    \n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h3d')" aria-expanded="false" id="btn-h3d">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s3d')" aria-expanded="false" id="btn-s3d">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h3d"><p>Put the risky conversion inside try. If it fails, Python jumps down to except instead of stopping the program.</p></div>
+          <div class="reveal" id="s3d"><pre class="code">raw = input("Type a number: ")
+try:
+    number = int(raw)
+    print("You gave me", number)
+except:
+    print("That was not a number")</pre></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Chapter 4 Exercises</h2>
+
+        <div class="ex">
+          <h3>4.1 Your first function <span class="level easy">Easy</span></h3>
+          <p class="task">Write a function called cheer that prints a short encouragement. Call it three times.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('def cheer():\n    print()\n\n# Now call it three times\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('s4a')" aria-expanded="false" id="btn-s4a">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="s4a"><pre class="code">def cheer():
+    print("Keep going, you are learning")
+
+cheer()
+cheer()
+cheer()</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>4.2 Function with a parameter <span class="level easy">Easy</span></h3>
+          <p class="task">Write a function that takes a name and prints a greeting using it. Call it with two different names.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('def greet(person):\n    print()\n\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('s4b')" aria-expanded="false" id="btn-s4b">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="s4b"><pre class="code">def greet(person):
+    print("Good to see you,", person)
+
+greet("Robert")
+greet("Kristina")</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>4.3 Return a value <span class="level medium">Medium</span></h3>
+          <p class="task">Write a function that takes two numbers and returns their sum. Print the result of calling it. Notice the difference between print and return.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('def add(a, b):\n    return \n\nprint(add(3, 4))\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h4c')" aria-expanded="false" id="btn-h4c">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s4c')" aria-expanded="false" id="btn-s4c">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h4c"><p>print shows something on the screen. return hands the value back so you can use it elsewhere. A function that only prints gives back nothing.</p></div>
+          <div class="reveal" id="s4c"><pre class="code">def add(a, b):
+    return a + b
+
+result = add(3, 4)
+print("The sum is", result)</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>4.4 Temperature converter <span class="level challenge">Challenge</span></h3>
+          <p class="task">Write a function that takes a Fahrenheit temperature and returns the Celsius value. Test it with 32, which should give 0.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('def to_celsius(f):\n    return \n\nprint(to_celsius(32))\nprint(to_celsius(212))\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h4d')" aria-expanded="false" id="btn-h4d">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s4d')" aria-expanded="false" id="btn-s4d">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h4d"><p>Subtract 32 first, then multiply by 5, then divide by 9. Brackets control the order.</p></div>
+          <div class="reveal" id="s4d"><pre class="code">def to_celsius(f):
+    return (f - 32) * 5 / 9
+
+print(to_celsius(32))
+print(to_celsius(212))</pre></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Chapter 5 Exercises</h2>
+
+        <div class="ex">
+          <h3>5.1 Count to ten <span class="level easy">Easy</span></h3>
+          <p class="task">Use a for loop with range to print the numbers 1 through 10.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('for number in range(1, 11):\n    print()\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h5a')" aria-expanded="false" id="btn-h5a">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s5a')" aria-expanded="false" id="btn-s5a">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h5a"><p>range stops just before the second number, so use 11 to reach 10.</p></div>
+          <div class="reveal" id="s5a"><pre class="code">for number in range(1, 11):
+    print(number)</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>5.2 Running total <span class="level medium">Medium</span></h3>
+          <p class="task">Add up all the numbers in a list and print the total. Start your total at zero before the loop begins.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('numbers = [4, 9, 2, 7, 1]\ntotal = 0\n\nfor n in numbers:\n    \n\nprint(\"Total:\", total)\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('s5b')" aria-expanded="false" id="btn-s5b">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="s5b"><pre class="code">numbers = [4, 9, 2, 7, 1]
+total = 0
+
+for n in numbers:
+    total = total + n
+
+print("Total:", total)</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>5.3 Count and average <span class="level medium">Medium</span></h3>
+          <p class="task">Loop through a list, keep both a total and a count, then print the average at the end.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('numbers = [10, 20, 30, 40]\ntotal = 0\ncount = 0\n\nfor n in numbers:\n    \n\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h5c')" aria-expanded="false" id="btn-h5c">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s5c')" aria-expanded="false" id="btn-s5c">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h5c"><p>Add to total each time, and add one to count each time. Divide at the very end, outside the loop.</p></div>
+          <div class="reveal" id="s5c"><pre class="code">numbers = [10, 20, 30, 40]
+total = 0
+count = 0
+
+for n in numbers:
+    total = total + n
+    count = count + 1
+
+print("Average:", total / count)</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>5.4 Skip and stop <span class="level medium">Medium</span></h3>
+          <p class="task">Loop through numbers 1 to 20. Skip every even number using continue, and stop the loop entirely when you reach 15 using break.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('for n in range(1, 21):\n    \n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h5d')" aria-expanded="false" id="btn-h5d">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s5d')" aria-expanded="false" id="btn-s5d">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h5d"><p>A number is even when dividing it by 2 leaves no remainder. The percent sign gives you the remainder.</p></div>
+          <div class="reveal" id="s5d"><pre class="code">for n in range(1, 21):
+    if n &gt; 15:
+        break
+    if n % 2 == 0:
+        continue
+    print(n)</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>5.5 Find the biggest <span class="level challenge">Challenge</span></h3>
+          <p class="task">Walk through a list and find the largest value, without using the built in max command. Start your best value at None and replace it whenever you see something bigger.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('numbers = [12, 45, 3, 78, 22]\nlargest = None\n\nfor n in numbers:\n    \n\nprint(\"Largest:\", largest)\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h5e')" aria-expanded="false" id="btn-h5e">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s5e')" aria-expanded="false" id="btn-s5e">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h5e"><p>Two cases to handle. If largest is still None, this is the first number, so take it. Otherwise, only replace it when the new number is bigger.</p></div>
+          <div class="reveal" id="s5e"><pre class="code">numbers = [12, 45, 3, 78, 22]
+largest = None
+
+for n in numbers:
+    if largest is None or n &gt; largest:
+        largest = n
+
+print("Largest:", largest)</pre></div>
+        </div>
+
+        <div class="ex">
+          <h3>5.6 Keep asking until done <span class="level challenge">Challenge</span></h3>
+          <p class="task">Use a while loop to keep asking for numbers until the person types the word done. Add them up as you go, then print the total.</p>
+          <div class="ex-btns">
+            <button class="mini-btn go" onclick="loadCode('total = 0\n\nwhile True:\n    entry = input(\"Number, or done to finish: \")\n    \n\nprint(\"Total:\", total)\n')">Load into Practice</button>
+            <button class="mini-btn" onclick="toggle('h5f')" aria-expanded="false" id="btn-h5f">Show hint</button>
+            <button class="mini-btn" onclick="toggle('s5f')" aria-expanded="false" id="btn-s5f">Show one way to do it</button>
+          </div>
+          <div class="reveal" id="h5f"><p>Check for the word done first and break out. Then use try and except so bad entries do not crash it.</p></div>
+          <div class="reveal" id="s5f"><pre class="code">total = 0
+
+while True:
+    entry = input("Number, or done to finish: ")
+    if entry == "done":
+        break
+    try:
+        total = total + int(entry)
+    except:
+        print("That was not a number, skipping")
+
+print("Total:", total)</pre></div>
+        </div>
       </div>
 
     </div>
 
     <!-- PRACTICE PANEL -->
-    <div class="panel" id="panel-practice" role="tabpanel">
+    <div class="panel" id="panel-practice" role="tabpanel" aria-labelledby="tab-practice" tabindex="0">
       <div class="card">
         <h2>Practice Python</h2>
-        <p>Type Python code below and press Run. This is real Python running right in your browser, so you can rehearse anything from the Learn tab. It is a safe place to experiment. Nothing here is graded.</p>
+        <p>Type Python code below and press Run. This is real Python running right in your browser, so you can rehearse anything from the Learn and Exercises tabs. It is a safe place to experiment. Nothing here is graded.</p>
         <p class="note">The first time you press Run, Python needs a moment to load, and this tab needs an internet connection. After that it is quick.</p>
 
+        <div class="loaded-msg" id="loadedMsg" role="status">Exercise starter code loaded. Edit it below and press Run.</div>
+
         <label for="code" style="font-weight:700; display:block; margin:10px 0 8px 0;">Your code</label>
-        <textarea id="code" spellcheck="false">print("Hello, World")
+        <textarea id="code" spellcheck="false" aria-describedby="codeHelp">print("Hello, World")
 print("I am learning Python")</textarea>
+        <p id="codeHelp" class="note">Indent lines inside a loop or function with four spaces.</p>
 
         <button class="run-btn" id="runBtn" onclick="runCode()">Run</button>
+        <button class="clear-btn" onclick="clearCode()">Clear</button>
 
-        <label for="output" style="font-weight:700; display:block; margin:6px 0 8px 0;">Output</label>
-        <div id="output">Your results will appear here.</div>
+        <h3 style="font-size:22px; color:var(--gold); margin:18px 0 8px 0;" id="outLabel">Output</h3>
+        <div id="output" role="status" aria-live="polite" aria-atomic="true" tabindex="0" aria-labelledby="outLabel">Your results will appear here.</div>
       </div>
     </div>
 
     <!-- PROGRESS PANEL -->
-    <div class="panel" id="panel-progress" role="tabpanel">
+    <div class="panel" id="panel-progress" role="tabpanel" aria-labelledby="tab-progress" tabindex="0">
       <div class="card">
         <h2>My Grade Progress</h2>
         <div class="stats">
           <div class="stat"><span class="big" id="countStat">0 of 12</span><span class="small">items finished</span></div>
           <div class="stat"><span class="big" id="gradeStat">0.00%</span><span class="small">of final grade completed</span></div>
         </div>
-        <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="progress-bar-wrap" role="progressbar" id="progressRole" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 percent of final grade completed" aria-label="Course grade completed">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p id="srSummary" role="status" aria-live="polite" class="note">0 of 12 items finished, 0 percent of your final grade.</p>
 
-        <div class="chapter-label">Chapter 1</div>
-        <ul class="checklist">
-          <li data-weight="9.18"><input type="checkbox" id="g1"><label for="g1"><span class="kind">Quiz.</span> Chapter 1</label><span class="weight">9.18%</span></li>
-          <li data-weight="8.26"><input type="checkbox" id="g2"><label for="g2"><span class="kind">Assignment.</span> Write Hello World</label><span class="weight">8.26%</span></li>
+        <div class="chapter-label" id="ch1">Chapter 1</div>
+        <ul class="checklist" aria-labelledby="ch1">
+          <li data-weight="9.18"><input type="checkbox" id="g1"><label for="g1"><span class="kind">Quiz.</span> Chapter 1, worth 9.18 percent</label><span class="weight" aria-hidden="true">9.18%</span></li>
+          <li data-weight="8.26"><input type="checkbox" id="g2"><label for="g2"><span class="kind">Assignment.</span> Write Hello World, worth 8.26 percent</label><span class="weight" aria-hidden="true">8.26%</span></li>
         </ul>
 
-        <div class="chapter-label">Chapter 2</div>
-        <ul class="checklist">
-          <li data-weight="8.26"><input type="checkbox" id="g3"><label for="g3"><span class="kind">Quiz.</span> Chapter 2</label><span class="weight">8.26%</span></li>
-          <li data-weight="8.26"><input type="checkbox" id="g4"><label for="g4"><span class="kind">Assignment.</span> Welcome Message</label><span class="weight">8.26%</span></li>
-          <li data-weight="8.26"><input type="checkbox" id="g5"><label for="g5"><span class="kind">Assignment.</span> Pay Calculator</label><span class="weight">8.26%</span></li>
+        <div class="chapter-label" id="ch2">Chapter 2</div>
+        <ul class="checklist" aria-labelledby="ch2">
+          <li data-weight="8.26"><input type="checkbox" id="g3"><label for="g3"><span class="kind">Quiz.</span> Chapter 2, worth 8.26 percent</label><span class="weight" aria-hidden="true">8.26%</span></li>
+          <li data-weight="8.26"><input type="checkbox" id="g4"><label for="g4"><span class="kind">Assignment.</span> Welcome Message, worth 8.26 percent</label><span class="weight" aria-hidden="true">8.26%</span></li>
+          <li data-weight="8.26"><input type="checkbox" id="g5"><label for="g5"><span class="kind">Assignment.</span> Pay Calculator, worth 8.26 percent</label><span class="weight" aria-hidden="true">8.26%</span></li>
         </ul>
 
-        <div class="chapter-label">Chapter 3</div>
-        <ul class="checklist">
-          <li data-weight="8.26"><input type="checkbox" id="g6"><label for="g6"><span class="kind">Quiz.</span> Chapter 3</label><span class="weight">8.26%</span></li>
-          <li data-weight="8.26"><input type="checkbox" id="g7"><label for="g7"><span class="kind">Assignment.</span> Overtime Pay Calculator</label><span class="weight">8.26%</span></li>
-          <li data-weight="8.26"><input type="checkbox" id="g8"><label for="g8"><span class="kind">Assignment.</span> Write Conditional Statements</label><span class="weight">8.26%</span></li>
+        <div class="chapter-label" id="ch3">Chapter 3</div>
+        <ul class="checklist" aria-labelledby="ch3">
+          <li data-weight="8.26"><input type="checkbox" id="g6"><label for="g6"><span class="kind">Quiz.</span> Chapter 3, worth 8.26 percent</label><span class="weight" aria-hidden="true">8.26%</span></li>
+          <li data-weight="8.26"><input type="checkbox" id="g7"><label for="g7"><span class="kind">Assignment.</span> Overtime Pay Calculator, worth 8.26 percent</label><span class="weight" aria-hidden="true">8.26%</span></li>
+          <li data-weight="8.26"><input type="checkbox" id="g8"><label for="g8"><span class="kind">Assignment.</span> Write Conditional Statements, worth 8.26 percent</label><span class="weight" aria-hidden="true">8.26%</span></li>
         </ul>
 
-        <div class="chapter-label">Chapter 4</div>
-        <ul class="checklist">
-          <li data-weight="8.25"><input type="checkbox" id="g9"><label for="g9"><span class="kind">Quiz.</span> Chapter 4</label><span class="weight">8.25%</span></li>
-          <li data-weight="8.25"><input type="checkbox" id="g10"><label for="g10"><span class="kind">Assignment.</span> Build Functions</label><span class="weight">8.25%</span></li>
+        <div class="chapter-label" id="ch4">Chapter 4</div>
+        <ul class="checklist" aria-labelledby="ch4">
+          <li data-weight="8.25"><input type="checkbox" id="g9"><label for="g9"><span class="kind">Quiz.</span> Chapter 4, worth 8.25 percent</label><span class="weight" aria-hidden="true">8.25%</span></li>
+          <li data-weight="8.25"><input type="checkbox" id="g10"><label for="g10"><span class="kind">Assignment.</span> Build Functions, worth 8.25 percent</label><span class="weight" aria-hidden="true">8.25%</span></li>
         </ul>
 
-        <div class="chapter-label">Chapter 5</div>
-        <ul class="checklist">
-          <li data-weight="8.25"><input type="checkbox" id="g11"><label for="g11"><span class="kind">Quiz.</span> Chapter 5</label><span class="weight">8.25%</span></li>
-          <li data-weight="8.25"><input type="checkbox" id="g12"><label for="g12"><span class="kind">Assignment.</span> Find the Largest and Smallest Numbers</label><span class="weight">8.25%</span></li>
+        <div class="chapter-label" id="ch5">Chapter 5</div>
+        <ul class="checklist" aria-labelledby="ch5">
+          <li data-weight="8.25"><input type="checkbox" id="g11"><label for="g11"><span class="kind">Quiz.</span> Chapter 5, worth 8.25 percent</label><span class="weight" aria-hidden="true">8.25%</span></li>
+          <li data-weight="8.25"><input type="checkbox" id="g12"><label for="g12"><span class="kind">Assignment.</span> Find the Largest and Smallest Numbers, worth 8.25 percent</label><span class="weight" aria-hidden="true">8.25%</span></li>
         </ul>
 
-        <p class="note">Check off each quiz or assignment as you pass it on Coursera. The percentage shows how much of your final grade you have finished. Your check marks are saved on this device when you open the file in your browser.</p>
+        <p class="note">Check off each quiz or assignment as you pass it on Coursera. Your check marks are saved in this browser on this device.</p>
       </div>
     </div>
 
     <!-- TRUTH PANEL -->
-    <div class="panel" id="panel-truth" role="tabpanel">
+    <div class="panel" id="panel-truth" role="tabpanel" aria-labelledby="tab-truth" tabindex="0">
       <div class="card">
         <h2>What Makes It Feel Hard</h2>
         <ul>
@@ -337,15 +783,52 @@ print("I am learning Python")</textarea>
         <p>Coding is not harder than learning to drive or learning an instrument. It just feels different at first. When something feels hard, it usually means you are learning. Every expert started exactly where you are. The only difference is that they kept going.</p>
       </div>
     </div>
+
+    </main>
   </div>
 
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
 <script>
+  var PANELS = ['learn','exercises','practice','progress','truth'];
+
   function showPanel(name) {
-    ['learn','practice','progress','truth'].forEach(function(n) {
-      document.getElementById('panel-' + n).classList.toggle('active', n === name);
-      document.getElementById('tab-' + n).classList.toggle('active', n === name);
+    PANELS.forEach(function(n) {
+      var isOn = (n === name);
+      document.getElementById('panel-' + n).classList.toggle('active', isOn);
+      var tab = document.getElementById('tab-' + n);
+      tab.setAttribute('aria-selected', isOn ? 'true' : 'false');
     });
+  }
+
+  function toggle(id) {
+    var el = document.getElementById(id);
+    var btn = document.getElementById('btn-' + id);
+    var open = el.classList.toggle('open');
+    if (btn) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      var t = btn.textContent;
+      if (open) {
+        btn.textContent = t.replace('Show', 'Hide');
+      } else {
+        btn.textContent = t.replace('Hide', 'Show');
+      }
+    }
+  }
+
+  function loadCode(text) {
+    document.getElementById('code').value = text;
+    showPanel('practice');
+    var msg = document.getElementById('loadedMsg');
+    msg.classList.add('show');
+    document.getElementById('code').focus();
+    window.scrollTo(0, 0);
+  }
+
+  function clearCode() {
+    document.getElementById('code').value = '';
+    document.getElementById('loadedMsg').classList.remove('show');
+    document.getElementById('output').textContent = 'Your results will appear here.';
+    document.getElementById('code').focus();
   }
 
   /* ---- Progress tracking ---- */
@@ -356,6 +839,7 @@ print("I am learning Python")</textarea>
   }
   function save(state) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {} }
   var state = loadSaved();
+
   function update() {
     var boxes = document.querySelectorAll('.checklist input[type="checkbox"]');
     var total = boxes.length, done = 0, grade = 0;
@@ -364,10 +848,17 @@ print("I am learning Python")</textarea>
       if (b.checked) { done++; grade += parseFloat(li.getAttribute('data-weight')) || 0; li.classList.add('done'); }
       else { li.classList.remove('done'); }
     });
+    var pct = grade.toFixed(2);
     document.getElementById('countStat').textContent = done + ' of ' + total;
-    document.getElementById('gradeStat').textContent = grade.toFixed(2) + '%';
+    document.getElementById('gradeStat').textContent = pct + '%';
     document.getElementById('progressBar').style.width = Math.min(grade, 100) + '%';
+    var role = document.getElementById('progressRole');
+    role.setAttribute('aria-valuenow', pct);
+    role.setAttribute('aria-valuetext', pct + ' percent of final grade completed');
+    document.getElementById('srSummary').textContent =
+      done + ' of ' + total + ' items finished, ' + pct + ' percent of your final grade.';
   }
+
   document.querySelectorAll('.checklist input[type="checkbox"]').forEach(function(box) {
     box.checked = !!state.checked[box.id];
     box.addEventListener('change', function() { state.checked[box.id] = box.checked; save(state); update(); });
@@ -389,13 +880,13 @@ print("I am learning Python")</textarea>
     await pyodide.runPythonAsync(
       "import builtins\n" +
       "from js import window\n" +
-      "def _claude_input(prompt=''):\n" +
+      "def _app_input(prompt=''):\n" +
       "    r = window.prompt(prompt)\n" +
       "    if r is None:\n" +
       "        r = ''\n" +
       "    print(str(prompt) + str(r))\n" +
       "    return str(r)\n" +
-      "builtins.input = _claude_input\n"
+      "builtins.input = _app_input\n"
     );
     return pyodide;
   }
@@ -409,7 +900,7 @@ print("I am learning Python")</textarea>
       var py = await ensurePy();
       setOut("");
       await py.runPythonAsync(document.getElementById('code').value);
-      if (outEl.textContent === "") setOut("(Your code ran, but did not print anything.)");
+      if (outEl.textContent === "") setOut("Your code ran, but did not print anything.");
     } catch (e) {
       appendOut("\n" + e);
     } finally {
